@@ -1,21 +1,31 @@
+import express, { Request, Response } from "express";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
 import { User } from "./entity/User";
 
-createConnection()
-  .then(async (connection) => {
-    console.log("Inserting a new user into the database...");
-    const user = new User();
-    user.firstName = "Timber";
-    user.lastName = "Saw";
-    user.age = 25;
-    await connection.manager.save(user);
-    console.log("Saved a new user with id: " + user.id);
+(async function initializeConnection() {
+  const app = express();
+  app.use(express.json());
 
-    console.log("Loading users from the database...");
-    const users = await connection.manager.find(User);
-    console.log("Loaded users: ", users);
+  app.post("/users", async function createUser(req: Request, res: Response) {
+    const { name, email, role } = req.body;
 
-    console.log("Here you can setup and run express/koa/any other framework.");
-  })
-  .catch((error) => console.log(error));
+    try {
+      const user = User.create({ name, email, role });
+      await user.save();
+      return res.status(201).json(user);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  });
+
+  try {
+    const connection = await createConnection();
+    app.listen(5000, function bootApp() {
+      console.log("Server listening on http://localhost:5000");
+    });
+  } catch (error) {
+    console.log(error);
+  }
+})();
