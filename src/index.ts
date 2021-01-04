@@ -20,6 +20,16 @@ import { User } from "./entity/User";
     }
   });
 
+  app.get("/users", async function readUsers(_req: Request, res: Response) {
+    try {
+      const users = await User.find();
+      return res.status(200).json(users);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  });
+
   try {
     const connection = await createConnection();
     app.listen(5000, function bootApp() {
