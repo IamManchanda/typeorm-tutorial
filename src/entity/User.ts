@@ -5,7 +5,9 @@ import {
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeInsert,
 } from "typeorm";
+import { v4 as uuidv4 } from "uuid";
 
 @Entity("users")
 export class User extends BaseEntity {
@@ -21,9 +23,17 @@ export class User extends BaseEntity {
   @Column()
   role: string;
 
+  @Column({ type: "uuid" })
+  uuid: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  createUuid() {
+    this.uuid = uuidv4();
+  }
 }
