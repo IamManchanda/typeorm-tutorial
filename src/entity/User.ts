@@ -36,4 +36,11 @@ export class User extends BaseEntity {
   createUuid() {
     this.uuid = uuidv4();
   }
+
+  toJSON() {
+    return {
+      ...this,
+      id: undefined,
+    };
+  }
 }
