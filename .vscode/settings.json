@@ -1,0 +1,10 @@
+{
+  "files.exclude": {
+    "**/.idea/": true,
+    "**/node_modules/": true,
+    "**/build/": true,
+    "**/tmp/": true,
+    "**/temp/": true,
+    "**/ormconfig.json": false
+  }
+}
