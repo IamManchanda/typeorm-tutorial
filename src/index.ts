@@ -25,7 +25,7 @@ import { Post } from "./entity/Post";
 
   app.get("/users", async function readUsers(_req: Request, res: Response) {
     try {
-      const users = await User.find();
+      const users = await User.find({ relations: ["posts"] });
       return res.status(200).json(users);
     } catch (error) {
       console.log(error);
@@ -103,6 +103,18 @@ import { Post } from "./entity/Post";
       const post = new Post({ title, body, user });
       await post.save();
       return res.status(200).json(post);
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .json({ error: "Something went wrong, Internal Server Error." });
+    }
+  });
+
+  app.get("/posts", async function createPost(_req: Request, res: Response) {
+    try {
+      const posts = await Post.find({ relations: ["user"] });
+      return res.status(200).json(posts);
     } catch (error) {
       console.log(error);
       return res
