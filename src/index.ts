@@ -7,6 +7,16 @@ import { User } from "./entity/User";
   const app = express();
   app.use(express.json());
 
+  app.get("/users", async function readUsers(_req: Request, res: Response) {
+    try {
+      const users = await User.find();
+      return res.status(200).json(users);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: "Something went wrong!" });
+    }
+  });
+
   app.post("/users", async function createUser(req: Request, res: Response) {
     const { name, email, role } = req.body;
 
@@ -16,19 +26,28 @@ import { User } from "./entity/User";
       return res.status(201).json(user);
     } catch (error) {
       console.log(error);
-      return res.status(500).json(error);
+      return res.status(500).json({ error: "Something went wrong!" });
     }
   });
 
-  app.get("/users", async function readUsers(_req: Request, res: Response) {
-    try {
-      const users = await User.find();
-      return res.status(200).json(users);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json(error);
-    }
-  });
+  app.put(
+    "/users/:uuid",
+    async function updateUser(req: Request, res: Response) {
+      const { uuid } = req.params;
+      const { name, email, role } = req.body;
+      try {
+        const user = await User.findOneOrFail({ uuid });
+        user.name = name || user.name;
+        user.email = email || user.email;
+        user.role = role || user.role;
+        await user.save();
+        return res.status(200).json(user);
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Something went wrong!" });
+      }
+    },
+  );
 
   try {
     const connection = await createConnection();
