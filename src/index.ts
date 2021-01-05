@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
+import { validate } from "class-validator";
 import { User } from "./entity/User";
 import { Post } from "./entity/Post";
 
@@ -12,7 +13,15 @@ import { Post } from "./entity/Post";
     const { name, email, role } = req.body;
 
     try {
-      const user = User.create({ name, email, role });
+      let user;
+      try {
+        user = User.create({ name, email, role });
+        const validationErrors = await validate(user);
+        if (validationErrors.length > 0) throw validationErrors;
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error });
+      }
       await user.save();
       return res.status(201).json(user);
     } catch (error) {

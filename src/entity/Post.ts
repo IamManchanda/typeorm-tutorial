@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 import Model from "./Model";
 import { User } from "./User";
 
