@@ -1,5 +1,6 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, ManyToOne } from "typeorm";
 import Model from "./Model";
+import { User } from "./User";
 
 @Entity("posts")
 export class Post extends Model {
@@ -8,4 +9,7 @@ export class Post extends Model {
 
   @Column()
   body: string;
+
+  @ManyToOne(() => User)
+  user: User;
 }

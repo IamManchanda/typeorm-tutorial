@@ -32,4 +32,9 @@ export default abstract class Model extends BaseEntity {
       id: undefined,
     };
   }
+
+  constructor(model?: Partial<any>) {
+    super();
+    Object.assign(this, model);
+  }
 }

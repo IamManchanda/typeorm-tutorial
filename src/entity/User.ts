@@ -1,5 +1,6 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, OneToMany } from "typeorm";
 import Model from "./Model";
+import { Post } from "./Post";
 
 @Entity("users")
 export class User extends Model {
@@ -11,4 +12,7 @@ export class User extends Model {
 
   @Column()
   role: string;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }
